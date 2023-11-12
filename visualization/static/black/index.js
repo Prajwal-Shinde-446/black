@@ -24285,7 +24285,7 @@
 
 // option = {
 //   xAxis: {
-//     type: 'category',
+//     // type: 'category',
 //     data: [...new Set(year)]
 //   },
 //   yAxis: {

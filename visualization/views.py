@@ -67,10 +67,10 @@ def view(request):
     countries = NewsArticle.objects.values_list('country', flat=True).distinct()
 
     # Fetch all NewsArticle objects
-    news_articles = NewsArticle.objects.all()
+    filtered_article = NewsArticle.objects.all()
 
     # Serialize the queryset to JSON
-    data = serialize('json', news_articles)
+    data = serialize('json', filtered_article)
 
     # Convert JSON string to Python list/dictionary
     json_data = json.loads(data)
@@ -84,11 +84,12 @@ def view(request):
         'pestles': list(pestles),
         'sources': list(sources),
         'countries': list(countries),
-        'news_articles': json_data
+        'filtered_article': json_data
     }
 
+    print(json_data)
     # Render the template with the context
-    return render(request, 'dashboard.html', context)
+    return render(request, 'dashboard.html',context)
 
 
 
@@ -163,6 +164,7 @@ from .models import NewsArticle
 from django.core.serializers import serialize
 from django.http import JsonResponse
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 def handle_refresh(request):
     try:
@@ -193,9 +195,10 @@ def handle_refresh(request):
     country_values = filtered_articles.values_list('country', flat=True)
     topic_values = filtered_articles.values_list('topic', flat=True)
     region_values = filtered_articles.values_list('region', flat=True)
-    articles_data = filtered_articles.values_list()
+    articles_data = list(filtered_articles.values())
 
     # print(filtered_articles)
+    print(topic_values)
 
     # # Serialize the filtered articles
     # articles_data = json.loads(serialize('json', filtered_articles))
@@ -211,8 +214,8 @@ def handle_refresh(request):
         'country': list(country_values),
         'topic': list(topic_values),
         'region': list(region_values),
-        'filtered_article':list(articles_data),
+        'filtered_articles': json.dumps(articles_data, cls=DjangoJSONEncoder),
     }
 
     # You can also return a response if needed
-    return render(request, 'dashboard.html', chart)
+    return JsonResponse(chart)
