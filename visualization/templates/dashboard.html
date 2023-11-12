@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ar" >
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" integrity="sha384-nU14brUcp6StFntEOOEBvcJm4huWjB0OcIeQ3fltAfSmuZFrkAif0T+UtNGlKKQv" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+    <style>
+      .custom-navbar {
+        background-color: #000 !important;
+      }
+
+      .custom-navbar .navbar-nav .nav-link {
+        color: #fff !important;
+      }
+
+      .custom-navbar .navbar-brand {
+        color: #808080 !important;
+      }
+
+      {% comment %} #myChartContainer {
+        width: 50% !important; 
+        float: left !important;
+        padding: 20px !important;
+    } {% endcomment %}
+    </style>
+
+    <style>
+      /* Custom CSS to move the close button to the top-right corner */
+      .modal-header {
+          position: relative !important;
+      }
+  
+      .btn-close {
+          position: absolute !important;
+          top: 20px !important;
+          right: 15px !important;
+      }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Add the following script to include the CSRF token -->
+    <script>
+        // Get the CSRF token from the cookie
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Set up jQuery to include the CSRF token in AJAX requests
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+    </script>
+
+  <script>
+    function displayData() {
+      // Collect selected values
+      var countryValue = $('#country').val();
+      var regionValue = $('#region').val();
+      var topicValue = $('#topic').val();
+      var end_yearValue = $('#end_year').val();
+      var sectorValue = $('#sector').val();
+      var pestleValue = $('#pestle').val();
+      // Repeat the pattern for other dropdowns (topic, end_year, sector, pestle)
+  
+      // Create a data object to send to the backend with only values
+      var requestData = {
+          country: countryValue,
+          region: regionValue,
+          topic: topicValue,
+          end_year: end_yearValue,
+          sector: sectorValue,
+          pestle: pestleValue,
+          // Repeat for other dropdowns
+      };
+  
+      // Use AJAX to send the data to the backend
+      $.ajax({
+          type: 'POST',  // Use POST or GET depending on your backend requirements
+          url: 'handle_refresh',  // Replace with your actual backend endpoint
+          data: JSON.stringify(requestData),
+          contentType: 'application/json',
+          success: function (response) {
+              // Handle the response from the backend if needed
+              console.log(response);
+          },
+          error: function (error) {
+              console.error('Error sending data to the backend:', error);
+          }
+      });
+  }
+</script>
+  
+
+
+    
+      
+
+    <title>hello</title>
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary custom-navbar">
+      <div class="container-fluid">
+          <a class="navbar-brand" href="/view">Assignment</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+  
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                      <div class="f-group ms-2">
+                          <label class="nav-link">Country</label>
+                          <select class="f-control f-dropdown" placeholder="Please choose a country" id="country">
+                              {% for country in countries %}
+                                  <option value="{{ country }}">{{ country }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </li>
+  
+                  <li class="nav-item">
+                      <div class="f-group ms-2">
+                          <label class="nav-link">Region</label>
+                          <select class="f-control f-dropdown" placeholder="Please choose a region" id="region">
+                              {% for region in regions %}
+                                  <option value="{{ region }}">{{ region }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </li>
+  
+                  <li class="nav-item">
+                      <div class="f-group ms-2">
+                          <label class="nav-link">Topic</label>
+                          <select class="f-control f-dropdown" placeholder="Please choose a topic" id="topic">
+                              {% for topic in topics %}
+                                  <option value="{{ topic }}">{{ topic }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </li>
+  
+                  <li class="nav-item">
+                      <div class="f-group ms-2">
+                          <label class="nav-link">End_year</label>
+                          <select class="f-control f-dropdown" placeholder="Please choose an end_year" id="end_year">
+                              {% for end_year in end_years %}
+                                  <option value="{{ end_year }}">{{ end_year }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </li>
+                  <li class="nav-item">
+                      <div class="f-group ms-2">
+                          <label class="nav-link">Sector</label>
+                          <select class="f-control f-dropdown" placeholder="Please choose a sector" id="sector">
+                              {% for sector in sectors %}
+                                  <option value="{{ sector }}">{{ sector }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </li>
+                  <li class="nav-item">
+                      <div class="f-group ms-4">
+                          <label class="nav-link">PEST</label>
+                          <select class="f-control f-dropdown" placeholder="Please choose a PEST" id="pestle">
+                              {% for pestle in pestles %}
+                                  <option value="{{ pestle }}">{{ pestle }}</option>
+                              {% endfor %}
+                          </select>
+                      </div>
+                  </li>
+              </ul>
+              {% csrf_token %}
+              <div class="f-group">
+                {% csrf_token %}
+                  <button type="button" class="btn btn-primary" onclick="displayData()">Refresh</button>
+              </div>
+          </div>
+      </div>
+  </nav>
+
+ 
+  
+
+  <div id="myChartContainer">
+    <canvas id="myChart"></canvas>
+</div>
+{% comment %} 
+<script>
+  const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+  // Fetch data from the Django view
+  const djangoApiUrl = '/handle_refresh';
+
+  fetch(djangoApiUrl, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken,
+      },
+      body: JSON.stringify({ /* your data here */ }),
+  })
+      .then(response => response.json())
+      .then(data => {
+          console.log(data);
+          // Process the data and update your chart
+      })
+      .catch(error => console.error('Error fetching data from Django:', error));
+</script> {% endcomment %}
+
+<script>
+    // Sample data for the chart
+    const filtered_articles = {{filtered_articles|safe }};
+    const topics = {{ topics|safe }};
+    const regions = {{ regions|safe }};
+    
+    {% comment %} console.log('Filtered Articles:', filtered_articles); {% endcomment %}
+
+    {% comment %} console.log('Topics:', topics);
+    console.log('Regions:', regions);
+    console.log('Filtered Articles:', filtered_articles); {% endcomment %}
+
+    // Dynamically generate labels and datasets for the polar area chart
+    const data = {
+        labels: regions,
+        datasets: topics.map((topic, index) => ({
+            label: topic,
+            data: regions.map(region => getArticleCountForTopicAndRegion(topic, region)),
+            backgroundColor: getRandomColor(),
+        })),
+    };
+
+    const config = {
+        type: 'polarArea',
+        data: data,
+        options: {},
+    };
+
+    function getArticleCountForTopicAndRegion(topic, region) {
+        // Use the filtered_articles queryset to get the count for the specified topic and region
+        const count = filtered_articles.filter(article => article.topic === topic && article.region === region).length;
+        console.log(`Count for ${topic} in ${region}:`, count);
+        return count;
+    }
+
+    function getRandomColor() {
+        // Replace this with your logic to generate random colors or use a predefined color palette
+        return `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
+    }
+
+    // The rest of your chart setup remains unchanged
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, config);
+</script>
+
+
+<script>
+  window.onerror = function (msg, url, line, col, error) {
+    console.error('Error:', msg, 'URL:', url, 'Line:', line, 'Column:', col, 'Error object:', error);
+  };
+</script>
+
+  
+
+    {% comment %} <nav class="navbar navbar-expand-lg bg-body-tertiary custom-navbar">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Assignment</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNavDropdown">
+            <ul class="navbar-nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Filter For 1st 
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#filterModal">end_year</a></li>
+                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#filterModal">topics</a></li>
+                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#filterModal">sector</a></li>
+                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#filterModal">pestle</a></li>
+                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#filterModal">source</a></li>
+                  <li><a class="dropdown-item"  data-bs-toggle="modal" data-bs-target="#filterModal">country</a></li>
+                </ul>
+              </li>
+            </ul>
+            
+          </div>
+        </div>
+      </nav> {% endcomment %}
+      
+      
+           
+          
+      
+          <!-- Optional JavaScript; choose one of the two! -->
+      
+          <!-- Option 1: Bootstrap Bundle with Popper -->
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+      
+          <script>
+            // JavaScript code to set the selectedDropdownItem and open the modal
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function () {
+                    // Set the value of the hidden input field to the text of the clicked dropdown item
+                    document.getElementById('selectedDropdownItem').value = this.textContent;
+                    // Open the modal
+                    var modal = new bootstrap.Modal(document.getElementById('filterModal'));
+                    modal.show();
+                });
+            });
+        </script>
+      
+          <!-- Option 2: Separate Popper and Bootstrap JS -->
+          <!--
+          <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+          -->
+        </body>
+      </html>
+
+     
+    
+
+     
+    
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+    <script>
+      // JavaScript code to set the selectedDropdownItem and open the modal
+      document.querySelectorAll('.dropdown-item').forEach(item => {
+          item.addEventListener('click', function () {
+              // Set the value of the hidden input field to the text of the clicked dropdown item
+              document.getElementById('selectedDropdownItem').value = this.textContent;
+              // Open the modal
+              var modal = new bootstrap.Modal(document.getElementById('filterModal'));
+              modal.show();
+          });
+      });
+  </script>
+
+  
+
+  
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+
+    -->
+   
+  </body>
+</html>

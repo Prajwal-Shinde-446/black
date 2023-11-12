@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{% static 'black/index.css' %}" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="allFilters">
+
+      <div class="f-group">
+        <label>Choose Country</label>
+        <select class="f-control f-dropdown" placeholder="Please choose a country" id="country">
+            {% for country in countries %}
+                <option value="{{ country }}">{{ country }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+        <!-- <div class="f-group">
+            <label>Choose End Year </label>
+            <select
+              class="f-control f-dropdown"
+              placeholder="Please choose a language"
+              id="endYear"
+            ></select>
+          </div> -->
+          <div class="f-group">
+            <label>Choose Region</label>
+            <select class="f-control f-dropdown" placeholder="Please choose a region" id="region">
+                {% for region in regions %}
+                    <option value="{{ region }}">{{ region }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="f-group">
+          <label>Choose Topic</label>
+          <select class="f-control f-dropdown" placeholder="Please choose a topic" id="topic">
+              {% for topic in topics %}
+                  <option value="{{ topic }}">{{ topic }}</option>
+              {% endfor %}
+          </select>
+        </div>
+          <div class="f-group">
+            <label>Choose End_year</label>
+            <select class="f-control f-dropdown" placeholder="Please choose an end_year" id="end_year">
+                {% for end_year in end_years %}
+                    <option value="{{ end_year }}">{{ end_year }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        </div>
+        <br> <br>
+
+        <hr>
+          <div class="f-group">
+            <label>Choose Sector</label>
+            <select class="f-control f-dropdown" placeholder="Please choose a sector" id="end_year">
+                {% for sector in sectors %}
+                    <option value="{{ sector }}">{{ sector }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        </div><br> <br><br> <br>
+
+          <div class="f-group">
+            <label>Choose PEST</label>
+            <select class="f-control f-dropdown" placeholder="Please choose a PEST" id="pestle">
+                {% for pestle in pestles %}
+                    <option value="{{ pestle }}">{{ pestle }}</option>
+                {% endfor %}
+            </select> 
+
+      </div>
+          <div class="f-group">
+              <button type="button" class="btn btn-primary" onclick="displayData()">Refresh</button>
+          </div>
+    </div>
+
+    <div id="showChart">
+      
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="{% static 'black/index.js' %}"></script>
+  </body>
+</html>
